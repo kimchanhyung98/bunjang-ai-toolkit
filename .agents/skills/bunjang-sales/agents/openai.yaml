@@ -1,0 +1,6 @@
+interface:
+  display_name: "번개장터 판매글 쓰기"
+  short_description: "번개장터 판매글 초안을 안전하게 작성"
+  default_prompt: "$bunjang-sales를 실행해 브라우저 설정과 로그인 확인부터 진행하고, products/ 아래 상품 폴더의 번개장터 판매글 초안을 작성하세요. 특정 상품만 처리해야 하면 $bunjang-sales <dir>처럼 실행하세요. 최종 등록 버튼은 누르지 마세요."
+policy:
+  allow_implicit_invocation: true
