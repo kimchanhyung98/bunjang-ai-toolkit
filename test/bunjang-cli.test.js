@@ -107,6 +107,29 @@ test("wrapper executes configured commands with --json and parses JSON output", 
   assert.deepEqual(calls, [{ cmd: "bunjang-cli", args: ["--json", "search", "아이폰"] }]);
 });
 
+test("wrapper surfaces invalid bunjang-cli JSON output with capability context", async () => {
+  const cli = createBunjangCli({
+    run: async () => ({ exitCode: 0, stdout: "warning: not json", stderr: "" })
+  });
+
+  await assert.rejects(
+    () => cli.execute("auth.status"),
+    /Failed to parse bunjang-cli JSON output for auth\.status/
+  );
+});
+
+test("wrapper times out stalled bunjang-cli processes", async () => {
+  await withTempDir("bunjang-cli-timeout-", async (dir) => {
+    const fakeBin = join(dir, "bunjang-cli");
+    await writeFile(fakeBin, "#!/usr/bin/env node\nsetInterval(() => {}, 1000);\n");
+    await chmod(fakeBin, 0o755);
+
+    const cli = createBunjangCli({ bin: fakeBin, timeoutMs: 20 });
+
+    await assert.rejects(() => cli.execute("auth.status"), /timed out after 20ms/);
+  });
+});
+
 test("executeCapability enforces login preflight and manual-only policy", async () => {
   const unauthenticatedCalls = [];
   const unauthenticated = {

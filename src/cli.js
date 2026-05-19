@@ -8,21 +8,23 @@ import {
 } from "./config.js";
 
 const AUTH_CAPABILITIES = new Set(POLICY.authCapabilityIds);
+const DEFAULT_COMMAND_TIMEOUT_MS = 60_000;
 
 export function createBunjangCli({
   bin = getRuntimeConfig().bunjangCliBin,
-  run = runCommand
+  run = runCommand,
+  timeoutMs = DEFAULT_COMMAND_TIMEOUT_MS
 } = {}) {
   return {
     async execute(capabilityId, params = {}) {
       const args = ["--json", ...buildCapabilityArgs(capabilityId, params)];
-      const result = await run(bin, args);
+      const result = await run(bin, args, { timeoutMs });
 
       if (result.exitCode !== 0) {
         throw new Error(result.stderr || `bunjang-cli failed with exit code ${result.exitCode}`);
       }
 
-      return parseJson(result.stdout);
+      return parseJson(result.stdout, capabilityId);
     }
   };
 }
@@ -112,17 +114,23 @@ export function buildCapabilityArgs(id, params = {}) {
   }
 }
 
-function parseJson(stdout) {
+function parseJson(stdout, capabilityId) {
   const text = String(stdout ?? "").trim();
 
   if (!text) {
     return null;
   }
 
-  return JSON.parse(text);
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    throw new Error(
+      `Failed to parse bunjang-cli JSON output for ${capabilityId}: ${error.message}. Output: ${snippet(text)}`
+    );
+  }
 }
 
-function runCommand(cmd, args) {
+function runCommand(cmd, args, { timeoutMs = DEFAULT_COMMAND_TIMEOUT_MS } = {}) {
   return new Promise((resolve) => {
     const child = spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"] });
     let stdout = "";
@@ -132,9 +140,19 @@ function runCommand(cmd, args) {
     const finish = (result) => {
       if (!settled) {
         settled = true;
+        clearTimeout(timeoutId);
         resolve(result);
       }
     };
+
+    const timeoutId = setTimeout(() => {
+      child.kill("SIGTERM");
+      finish({
+        exitCode: 124,
+        stdout,
+        stderr: `bunjang-cli timed out after ${timeoutMs}ms`
+      });
+    }, timeoutMs);
 
     child.stdout.on("data", (chunk) => {
       stdout += chunk;
@@ -143,7 +161,7 @@ function runCommand(cmd, args) {
       stderr += chunk;
     });
     child.on("error", (error) => {
-      finish({ exitCode: 1, stdout, stderr: error.message });
+      finish({ exitCode: null, stdout, stderr: error.message });
     });
     child.on("close", (exitCode) => {
       finish({ exitCode, stdout, stderr });
@@ -194,6 +212,11 @@ function appendOption(args, flag, value) {
   if (value !== undefined && value !== null && value !== "") {
     args.push(flag, String(value));
   }
+}
+
+function snippet(text) {
+  const normalized = text.replace(/\s+/g, " ");
+  return normalized.length > 200 ? `${normalized.slice(0, 200)}...` : normalized;
 }
 
 function required(value, name) {
