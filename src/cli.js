@@ -7,7 +7,7 @@ import {
   getRuntimeConfig
 } from "./config.js";
 
-const AUTH_CAPABILITIES = new Set(POLICY.authCapabilityIds);
+const LOGIN_REQUIRED_CAPABILITIES = new Set(POLICY.loginRequiredCapabilityIds);
 const DEFAULT_COMMAND_TIMEOUT_MS = 60_000;
 
 export function createBunjangCli({
@@ -39,7 +39,7 @@ export async function executeCapability(cli, capabilityId, params = {}) {
     };
   }
 
-  if (!AUTH_CAPABILITIES.has(capabilityId)) {
+  if (LOGIN_REQUIRED_CAPABILITIES.has(capabilityId)) {
     const authStatus = await cli.execute("auth.status", {});
 
     if (!isAuthenticated(authStatus)) {
@@ -75,7 +75,6 @@ export function buildCapabilityArgs(id, params = {}) {
 
   switch (id) {
     case "auth.status":
-    case "auth.login":
     case "auth.logout":
     case "chat.list":
     case "favorite.list":

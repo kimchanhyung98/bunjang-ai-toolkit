@@ -17,10 +17,10 @@ export const CAPABILITIES = Object.freeze([
   },
   {
     id: "auth.login",
-    executionMode: EXECUTION_MODES.ALLOW,
+    executionMode: EXECUTION_MODES.DENY,
     command: "auth",
     subcommand: "login",
-    description: "로그인 플로우를 시작한다."
+    description: "헤드풀 브라우저 로그인은 수동 전용이다."
   },
   {
     id: "auth.logout",
@@ -144,7 +144,16 @@ export const CAPABILITY_EXECUTION_MODES = Object.freeze(
 );
 
 export const POLICY = Object.freeze({
-  authCapabilityIds: Object.freeze(["auth.status", "auth.login", "auth.logout"])
+  loginRequiredCapabilityIds: Object.freeze([
+    "chat.list",
+    "chat.read",
+    "chat.start",
+    "chat.send",
+    "favorite.list",
+    "favorite.add",
+    "favorite.remove",
+    "purchase.prepare"
+  ])
 });
 
 export const APP_CONFIG = Object.freeze({

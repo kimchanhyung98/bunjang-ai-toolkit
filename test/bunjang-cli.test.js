@@ -30,7 +30,6 @@ test("configuration explicitly allows supported capabilities and denies manual-o
 
   assert.deepEqual(byMode(EXECUTION_MODES.ALLOW), [
     "agent-search-rank",
-    "auth.login",
     "auth.logout",
     "auth.status",
     "chat.list",
@@ -47,6 +46,7 @@ test("configuration explicitly allows supported capabilities and denies manual-o
   ]);
   assert.deepEqual(byMode(EXECUTION_MODES.DENY), [
     "account.settings.update",
+    "auth.login",
     "purchase.confirm",
     "purchase.start"
   ]);
@@ -63,7 +63,6 @@ test("runtime config keeps the bunjang-cli binary configurable", () => {
 test("argument builder maps only configured capabilities to bunjang-cli commands", () => {
   const cases = [
     ["auth.status", {}, ["auth", "status"]],
-    ["auth.login", {}, ["auth", "login"]],
     ["auth.logout", {}, ["auth", "logout"]],
     ["search.listings", { query: "아이폰", maxItems: 5, sort: "date", withDetail: true }, ["search", "아이폰", "--max-items", "5", "--sort", "date", "--with-detail"]],
     ["agent-search-rank", { query: "아이폰", maxItems: 3, withDetail: true, ai: true }, ["agent-search-rank", "아이폰", "--max-items", "3"]],
@@ -88,6 +87,7 @@ test("denied, unknown, or incomplete work is rejected before spawning bunjang-cl
   assert.throws(() => buildCapabilityArgs("purchase.start", { listingId: "item-1" }), /deny mode/);
   assert.throws(() => buildCapabilityArgs("purchase.confirm", {}), /deny mode/);
   assert.throws(() => buildCapabilityArgs("account.settings.update", {}), /deny mode/);
+  assert.throws(() => buildCapabilityArgs("auth.login", {}), /deny mode/);
   assert.throws(() => buildCapabilityArgs("raw.cli", {}), /Unknown capability/);
   assert.throws(() => buildCapabilityArgs("search.listings", {}), /query is required/);
   assert.throws(() => buildCapabilityArgs("chat.send", { threadId: "thread-1" }), /message is required/);
@@ -172,6 +172,23 @@ test("executeCapability enforces login preflight and manual-only policy", async 
     status: "manual_only",
     capabilityId: "purchase.start"
   });
+});
+
+test("public reads run without a login preflight", async () => {
+  const calls = [];
+  const cli = {
+    execute: async (capabilityId) => {
+      calls.push(capabilityId);
+      return { items: [] };
+    }
+  };
+
+  assert.deepEqual(await executeCapability(cli, "search.listings", { query: "아이폰" }), {
+    status: "executed",
+    capabilityId: "search.listings",
+    result: { items: [] }
+  });
+  assert.deepEqual(calls, ["search.listings"]);
 });
 
 test("npm run bunjang invokes the configured bunjang-cli binary through the wrapper", async () => {
