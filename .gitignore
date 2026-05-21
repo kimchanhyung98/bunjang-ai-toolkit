@@ -1,8 +1,3 @@
-# Products
-/products/*
-!/products/ai-context.md
-!/products/template.md
-
 # Distribution / packaging
 .Python
 __pycache__/
@@ -118,6 +113,10 @@ credentials.json
 *.ipr
 out/
 
+# Local agent installs
+.codex/
+.claude/
+
 # OS
 .AppleDouble
 .DS_Store*
@@ -137,6 +136,8 @@ $RECYCLE.BIN/
 
 # AI Agent
 .agents/*
+!.agents/plugins/
+!.agents/plugins/**
 !.agents/rules/
 !.agents/rules/**
 !.agents/skills/

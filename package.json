@@ -2,10 +2,16 @@
   "name": "bunjang-assistant",
   "version": "0.2.0",
   "private": true,
+  "description": "AI surface manifests, public skill metadata, install metadata, and a safe wrapper for connecting bunjang-cli to Codex and Claude on macOS.",
   "type": "module",
+  "bin": {
+    "bunjang-assistant": "./install/bunjang-assistant-install.mjs",
+    "bunjang-assistant-install": "./install/bunjang-assistant-install.mjs",
+    "bunjang-assistant-run": "./src/index.js"
+  },
   "scripts": {
     "bunjang": "node src/index.js",
-    "test": "node --test",
+    "test": "node --test test/*.test.js",
     "check": "npm test"
   },
   "dependencies": {
@@ -13,5 +19,30 @@
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "plugin.json",
+    ".agents/plugins/marketplace.json",
+    ".codex-plugin/**",
+    ".claude-plugin/**",
+    "docs/**",
+    "install/**",
+    "skills/bunjang/**",
+    "src/**"
+  ],
+  "keywords": [
+    "bunjang",
+    "bunjang-cli",
+    "bunjang-assistant",
+    "bunjang-tool",
+    "bunjang-tools",
+    "번개장터툴",
+    "번개장터도구",
+    "codex-plugin",
+    "claude-plugin",
+    "agent-toolkit"
+  ]
 }

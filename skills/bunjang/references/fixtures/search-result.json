@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "listingId": "fixture-1",
+      "title": "아이폰 15 128GB",
+      "price": 720000,
+      "condition": "used"
+    },
+    {
+      "listingId": "fixture-2",
+      "title": "아이폰 15 256GB",
+      "price": 810000,
+      "condition": "used"
+    }
+  ]
+}

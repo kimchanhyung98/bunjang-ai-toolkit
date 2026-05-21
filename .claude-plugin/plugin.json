@@ -1,0 +1,24 @@
+{
+  "name": "bunjang-assistant",
+  "description": "Claude Code metadata that connects the public `bunjang` skill and local bunjang-cli wrapper on macOS.",
+  "version": "0.2.0",
+  "author": {
+    "name": "kimchanhyung98",
+    "url": "https://github.com/kimchanhyung98"
+  },
+  "homepage": "https://github.com/kimchanhyung98/bunjang-assistant",
+  "repository": "https://github.com/kimchanhyung98/bunjang-assistant.git",
+  "license": "MIT",
+  "keywords": [
+    "bunjang",
+    "bunjang-cli",
+    "claude",
+    "claude-code",
+    "bunjang-tool",
+    "bunjang-tools",
+    "번개장터툴",
+    "번개장터도구",
+    "agent-toolkit"
+  ],
+  "skills": "./skills/"
+}

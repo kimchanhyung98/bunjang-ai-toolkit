@@ -1,0 +1,36 @@
+{
+  "name": "bunjang-assistant",
+  "version": "0.2.0",
+  "description": "Plugin-first metadata for connecting the public `bunjang` skill and bunjang-cli wrapper consistently across Codex and Claude on macOS.",
+  "author": {
+    "name": "kimchanhyung98",
+    "url": "https://github.com/kimchanhyung98"
+  },
+  "homepage": "https://github.com/kimchanhyung98/bunjang-assistant",
+  "repository": "https://github.com/kimchanhyung98/bunjang-assistant.git",
+  "license": "MIT",
+  "skills": "./skills",
+  "docs": "./docs",
+  "install": "./install",
+  "entrypoints": {
+    "codex": "./.codex-plugin/plugin.json",
+    "codexMarketplace": "./.agents/plugins/marketplace.json",
+    "claude": "./.claude-plugin/plugin.json",
+    "claudeManifest": "./.claude-plugin/manifest.json",
+    "claudeMarketplace": "./.claude-plugin/marketplace.json",
+    "supportMatrix": "./docs/surface-support-matrix.md"
+  },
+  "support": {
+    "codex": [
+      "codex-cli",
+      "codex-app"
+    ],
+    "claude": [
+      "claude-code"
+    ],
+    "os": [
+      "macos-intel",
+      "macos-apple-silicon"
+    ]
+  }
+}

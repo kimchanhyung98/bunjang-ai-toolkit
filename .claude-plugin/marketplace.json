@@ -1,0 +1,10 @@
+{
+  "name": "bunjang-assistant",
+  "displayName": "bunjang assistant",
+  "description": "Claude Code plugin metadata for the public bunjang skill and local bunjang-cli wrapper.",
+  "source": {
+    "source": "github",
+    "repo": "kimchanhyung98/bunjang-assistant",
+    "ref": "main"
+  }
+}

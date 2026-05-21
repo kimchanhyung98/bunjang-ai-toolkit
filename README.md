@@ -1,46 +1,63 @@
-# 번개장터 어시스턴트
+# bunjang-assistant
 
-번개장터 운영을 보조하는 AI 에이전트
+번개장터 운영을 로컬 Mac에서 Codex 또는 Claude와 함께 처리하기 위한 AI 툴킷입니다.
 
-- `bunjang-cli`: 검색, 조회, 채팅, 관심상품, 구매 가능 여부 확인 같은 작업을 수행
-- `bunjang-sales`: 상품 폴더와 브라우저 자동화로 판매글 초안을 작성
+이 저장소는 번개장터 운영을 AI 에이전트와 함께 처리하기 위한 로컬 툴킷입니다. `bunjang-cli` 자체를 대체하지 않고, AI 실행 표면 메타데이터, 설치 헬퍼, 단일 공개 스킬, 그리고 `bunjang-cli`를 안전하게 호출하는 Node 래퍼를 제공합니다.
 
-## 프로젝트 구조
-
-```text
-.agents/skills/
-  bunjang-cli/
-  bunjang-sales/
-
-.claude/skills/
-  bunjang-cli/
-  bunjang-sales/
-  
-products/
-  ai-context.md          # 판매글 작성 AI 작업 지침
-  template.md            # 판매글 기본값과 형식
-  {product-name}/
-    image.jpg            # 사용자가 추가한 상품 사진
-    official-01.jpg      # 선택: 대표 이미지 후보
-    note.md              # 선택: 상품명, 사이즈, 하자, 구성품, 희망 가격
-  
-src/
-  config.js   # capability 목록, allow/deny 정책, 런타임 설정
-  cli.js      # bunjang-cli argument builder, 실행 래퍼, 로그인 preflight
-  index.js    # npm run bunjang 진입점
-
-test/
-  bunjang-cli.test.js
+```mermaid
+flowchart LR
+  Toolkit["bunjang-assistant"] --> CLI["bunjang-cli"]
+  Toolkit --> Codex["Codex"]
+  Toolkit --> Claude["Claude Code"]
+  Codex --> CLI
+  Claude --> CLI
 ```
 
-## bunjang-cli
+## 지원 범위
 
-CLI 래퍼는 임의의 `bunjang-cli` 명령을 직접 실행하지 않고, `src/config.js`에 등록된 capability만 실행합니다.
+- macOS Intel, Apple Silicon
+- Codex CLI/App
+- Claude Code
+- 로컬 개인/소규모 공유 운영
 
-`paramsJson`은 생략할 수 있고, 전달하면 JSON 객체여야 합니다. 형식이 잘못되면 `Invalid paramsJson:` 오류로 중단합니다.
+범위 밖:
+
+- Cursor, Claude Desktop MCP bridge, Windows/Linux 설치기
+- 호스팅 문서 사이트, 다국어 릴리스, 기업형 승인/스케줄러 흐름
+- 자동 최종 구매, 자동 판매글 등록, 계정 설정 변경
+
+## 설치와 검증
 
 ```bash
 npm install
+npm test
+```
+
+툴킷 설치기:
+
+```bash
+node install/bunjang-assistant-install.mjs --tool cli
+node install/bunjang-assistant-install.mjs --tool codex --dry-run
+node install/bunjang-assistant-install.mjs --tool claude-code --dry-run
+node install/bunjang-assistant-install.mjs --tool both --dry-run
+```
+
+`--tool cli`는 `npm install` 뒤 `npm run bunjang -- auth.status`로 래퍼 준비 상태를 확인합니다.
+
+## 요청 예시
+
+```text
+번개장터에서 아이폰 15 128GB 시세 알려줘
+번개장터 판매글 작성해줘
+/Users/me/sales/balenciaga-3xl 디렉토리 기준으로 판매글 초안 만들어줘
+번개장터에 A 디렉토리의 상품들 판매글 작성해
+이 매물 상세 확인해줘: 123456
+찜했던 상품들 가격 알려줘
+```
+
+## CLI 래퍼 실행
+
+```bash
 npm run bunjang -- <capabilityId> '<paramsJson>'
 ```
 
@@ -49,13 +66,16 @@ npm run bunjang -- <capabilityId> '<paramsJson>'
 ```bash
 npm run bunjang -- auth.status
 npm run bunjang -- search.listings '{"query":"아이폰","maxItems":5}'
+npm run bunjang -- agent-search-rank '{"query":"아이폰","maxItems":10}'
 npm run bunjang -- item.get '{"listingId":"123456"}'
 npm run bunjang -- chat.send '{"threadId":"thread-1","message":"답변입니다."}'
 ```
 
-### capability
+`paramsJson`은 생략할 수 있고, 전달하면 JSON 객체여야 합니다.
 
-다음 작업은 로그인 없이 실행합니다.
+## 기능 정책
+
+로그인 없이 실행:
 
 - `search.listings`
 - `agent-search-rank`
@@ -64,7 +84,7 @@ npm run bunjang -- chat.send '{"threadId":"thread-1","message":"답변입니다.
 - `auth.status`
 - `auth.logout`
 
-다음 작업은 실행 전 `auth.status`로 로그인 상태를 확인합니다.
+실행 전 `auth.status` 확인:
 
 - `chat.list`
 - `chat.read`
@@ -75,22 +95,79 @@ npm run bunjang -- chat.send '{"threadId":"thread-1","message":"답변입니다.
 - `favorite.remove`
 - `purchase.prepare`
 
-다음 작업은 수동 전용입니다.
+수동 전용:
 
 - `auth.login`
 - `purchase.start`
 - `purchase.confirm`
 - `account.settings.update`
 
-## bunjang-sales
+`src/config.js`가 capability의 기준 파일입니다.
 
-상품 사진과 템플릿을 읽고, 연결된 브라우저에서 번개장터 판매글 초안을 입력합니다.
+## AI 툴킷 구조
 
-기본 흐름:
+```text
+plugin.json
+.codex-plugin/plugin.json
+.claude-plugin/plugin.json
+.claude-plugin/manifest.json
+.agents/plugins/marketplace.json
 
-1. `products/{product-name}/`에 상품 사진을 넣습니다.
-2. 필요하면 `note.md`에 상품명, 사이즈, 하자, 구성품, 희망 가격을 적습니다.
-3. 에이전트에서 `bunjang-sales` 또는 `bunjang-sales <product-dir>`를 실행합니다.
-4. 브라우저 로그인은 사용자가 직접 완료합니다.
-5. 스킬이 상품 분석, 시세 조사, 이미지 준비, 판매글 초안 입력을 진행합니다.
-6. 사용자가 초안과 이미지를 확인한 뒤 직접 등록합니다.
+install/
+  bunjang-assistant-install.mjs
+  install-skills.sh
+
+docs/
+  ai-agent-installation.md
+  bunjang-assistant.md
+  cli-toolkit-integration.md
+  skill-installation-and-usage.md
+  surface-support-matrix.md
+
+skills/
+  bunjang/
+    SKILL.md
+    docs/
+      capability-registry.md
+      cli-usage.md
+      execution-contract.md
+      scenario-playbooks.md
+    references/
+      ai-context.md
+      browser.md
+      marketplace.md
+      price.md
+      routing.md
+      sales.md
+      search-result-fixture.md
+      template.md
+      fixtures/
+        search-result.json
+
+사용자가 지정한 상품 루트/
+  {product-name}/
+    image.jpg
+    note.md
+
+src/
+  config.js
+  cli.js
+  index.js
+```
+
+## 판매글 초안
+
+판매글 작성은 `skills/bunjang/SKILL.md`, `skills/bunjang/references/sales.md`, `skills/bunjang/references/ai-context.md`, `skills/bunjang/references/template.md`를 기준으로 진행합니다.
+
+`/bunjang` 같은 별도 커맨드는 제공하지 않습니다. 사용자는 자연어로 “번장 판매글 작성해줘”, “시세 확인해줘”, “찜했던거 가격 알려줘”처럼 요청하고, 스킬이 필요한 CLI capability를 선택합니다.
+
+상품 루트는 저장소에 고정하지 않습니다. 사용자가 “A 디렉토리의 상품들”처럼 경로를 지정하면 그 디렉토리를 상품 루트로 보고, 바로 아래 상품 디렉토리들을 순서대로 처리합니다. 지정한 디렉토리 자체가 단일 상품 사진과 메모를 담고 있으면 그 디렉토리를 단일 상품 디렉토리로 처리합니다.
+
+자동화는 되돌릴 수 있는 초안 입력까지만 허용합니다. `등록하기`, 최종 구매 확정, 계정 설정 변경은 자동화하지 않습니다.
+
+## 운영 범위
+
+- macOS Intel/Apple Silicon, Codex, Claude Code만 고려합니다.
+- Cursor, Claude Desktop MCP 번들, Windows/Linux 설치기, 웹 문서 사이트는 제외합니다.
+- 고객/클라이언트 제공용 기업 워크플로가 아니라 개인/소규모 공유 운영용입니다.
+- `bunjang-cli`가 제공하지 않는 기능은 툴킷에서 꾸며내지 않습니다.

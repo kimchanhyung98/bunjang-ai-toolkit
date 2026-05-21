@@ -1,0 +1,21 @@
+{
+  "name": "bunjang-assistant",
+  "interface": {
+    "displayName": "bunjang assistant"
+  },
+  "plugins": [
+    {
+      "name": "bunjang-assistant",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/kimchanhyung98/bunjang-assistant.git",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    }
+  ]
+}
