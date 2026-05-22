@@ -29,8 +29,8 @@ test("root plugin metadata is scoped to Codex, Claude, and macOS", async () => {
   const plugin = await readJson("plugin.json");
 
   assert.equal(plugin.name, "bunjang-assistant");
-  assert.deepEqual(plugin.support.codex, ["codex-cli", "codex-app"]);
-  assert.deepEqual(plugin.support.claude, ["claude-code"]);
+  assert.deepEqual(plugin.support.codex, ["codex"]);
+  assert.deepEqual(plugin.support.claude, ["claude"]);
   assert.deepEqual(plugin.support.os, ["macos-intel", "macos-apple-silicon"]);
   assert.equal(plugin.commands, undefined);
   assert.equal(plugin.assets, undefined);
@@ -82,7 +82,7 @@ test("installer metadata excludes unsupported surfaces", async () => {
   const claudePlugin = await readJson(".claude-plugin/plugin.json");
   const claudeManifest = await readJson(".claude-plugin/manifest.json");
 
-  assert.match(installer, /--tool cli\|codex\|claude-code\|both/);
+  assert.match(installer, /--tool cli\|codex\|claude\|both/);
   assert.match(installer, /Cursor, Claude Desktop MCP, Windows, and Linux installers are intentionally out of scope/);
   assert.match(installReadme, /install-skills\.sh/);
   assert.doesNotMatch(installReadme, /install-cli\.sh|install-plugins\.sh|bootstrap-bunjang\.sh/);

@@ -1,6 +1,6 @@
 {
   "name": "bunjang-assistant",
-  "description": "Claude Code metadata that connects the public `bunjang` skill and local bunjang-cli wrapper on macOS.",
+  "description": "Claude metadata that connects the public `bunjang` skill and local bunjang-cli wrapper on macOS.",
   "version": "0.2.0",
   "author": {
     "name": "kimchanhyung98",
@@ -13,7 +13,6 @@
     "bunjang",
     "bunjang-cli",
     "claude",
-    "claude-code",
     "bunjang-tool",
     "bunjang-tools",
     "번개장터툴",

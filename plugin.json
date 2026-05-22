@@ -22,11 +22,10 @@
   },
   "support": {
     "codex": [
-      "codex-cli",
-      "codex-app"
+      "codex"
     ],
     "claude": [
-      "claude-code"
+      "claude"
     ],
     "os": [
       "macos-intel",

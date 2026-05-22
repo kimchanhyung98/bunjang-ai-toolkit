@@ -1,6 +1,6 @@
 {
   "name": "bunjang-assistant",
-  "description": "Claude Code compatibility manifest for the public bunjang skill and local bunjang-cli wrapper.",
+  "description": "Claude compatibility manifest for the public bunjang skill and local bunjang-cli wrapper.",
   "version": "0.2.0",
   "author": {
     "name": "kimchanhyung98",
