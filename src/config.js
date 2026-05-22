@@ -18,8 +18,6 @@ export const CAPABILITIES = Object.freeze([
   {
     id: "auth.login",
     executionMode: EXECUTION_MODES.DENY,
-    command: "auth",
-    subcommand: "login",
     description: "헤드풀 브라우저 로그인은 수동 전용이다."
   },
   {
@@ -114,8 +112,6 @@ export const CAPABILITIES = Object.freeze([
   {
     id: "purchase.start",
     executionMode: EXECUTION_MODES.DENY,
-    command: "purchase",
-    subcommand: "start",
     description: "구매 흐름 시작은 수동 전용이다."
   },
   {

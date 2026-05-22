@@ -13,15 +13,28 @@ const DEFAULT_COMMAND_TIMEOUT_MS = 60_000;
 export function createBunjangCli({
   bin = getRuntimeConfig().bunjangCliBin,
   run = runCommand,
-  timeoutMs = DEFAULT_COMMAND_TIMEOUT_MS
+  timeoutMs = DEFAULT_COMMAND_TIMEOUT_MS,
+  killGraceMs = SIGKILL_GRACE_MS
 } = {}) {
   return {
     async execute(capabilityId, params = {}) {
+      if (executionModeForCapability(capabilityId) === EXECUTION_MODES.DENY) {
+        throw new Error(`Capability is deny mode and cannot be executed: ${capabilityId}`);
+      }
+
       const args = ["--json", ...buildCapabilityArgs(capabilityId, params)];
-      const result = await run(bin, args, { timeoutMs });
+      const result = await run(bin, args, { timeoutMs, killGraceMs });
+
+      if (result.exitCode === null) {
+        throw new Error(result.stderr || `Failed to spawn bunjang-cli at ${bin}`);
+      }
 
       if (result.exitCode !== 0) {
         throw new Error(result.stderr || `bunjang-cli failed with exit code ${result.exitCode}`);
+      }
+
+      if (result.stderr) {
+        process.stderr.write(`bunjang-cli stderr (${capabilityId}): ${result.stderr}\n`);
       }
 
       return parseJson(result.stdout, capabilityId);
@@ -117,7 +130,7 @@ function parseJson(stdout, capabilityId) {
   const text = String(stdout ?? "").trim();
 
   if (!text) {
-    return null;
+    throw new Error(`bunjang-cli produced no output for ${capabilityId}`);
   }
 
   try {
@@ -129,28 +142,40 @@ function parseJson(stdout, capabilityId) {
   }
 }
 
-function runCommand(cmd, args, { timeoutMs = DEFAULT_COMMAND_TIMEOUT_MS } = {}) {
+const SIGKILL_GRACE_MS = 2_000;
+
+function runCommand(
+  cmd,
+  args,
+  {
+    timeoutMs = DEFAULT_COMMAND_TIMEOUT_MS,
+    killGraceMs = SIGKILL_GRACE_MS
+  } = {}
+) {
   return new Promise((resolve) => {
     const child = spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"] });
     let stdout = "";
     let stderr = "";
     let settled = false;
+    let timedOut = false;
+    let killTimeoutId = null;
 
     const finish = (result) => {
       if (!settled) {
         settled = true;
         clearTimeout(timeoutId);
+        clearTimeout(killTimeoutId);
         resolve(result);
       }
     };
 
     const timeoutId = setTimeout(() => {
+      timedOut = true;
       child.kill("SIGTERM");
-      finish({
-        exitCode: 124,
-        stdout,
-        stderr: `bunjang-cli timed out after ${timeoutMs}ms`
-      });
+      killTimeoutId = setTimeout(() => {
+        child.kill("SIGKILL");
+        finish(timeoutResult(stdout, timeoutMs));
+      }, killGraceMs);
     }, timeoutMs);
 
     child.stdout.on("data", (chunk) => {
@@ -163,9 +188,17 @@ function runCommand(cmd, args, { timeoutMs = DEFAULT_COMMAND_TIMEOUT_MS } = {}) 
       finish({ exitCode: null, stdout, stderr: error.message });
     });
     child.on("close", (exitCode) => {
-      finish({ exitCode, stdout, stderr });
+      finish(timedOut ? timeoutResult(stdout, timeoutMs) : { exitCode, stdout, stderr });
     });
   });
+}
+
+function timeoutResult(stdout, timeoutMs) {
+  return {
+    exitCode: 124,
+    stdout,
+    stderr: `bunjang-cli timed out after ${timeoutMs}ms`
+  };
 }
 
 function buildSearchArgs(command, params) {

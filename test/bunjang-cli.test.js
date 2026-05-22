@@ -130,6 +130,29 @@ test("wrapper times out stalled bunjang-cli processes", async () => {
   });
 });
 
+test("wrapper force-kills bunjang-cli processes that ignore SIGTERM", async () => {
+  await withTempDir("bunjang-cli-ignore-term-", async (dir) => {
+    const fakeBin = join(dir, "bunjang-cli");
+    await writeFile(
+      fakeBin,
+      [
+        "#!/usr/bin/env node",
+        "process.on('SIGTERM', () => {});",
+        "setInterval(() => {}, 1000);"
+      ].join("\n")
+    );
+    await chmod(fakeBin, 0o755);
+
+    const cli = createBunjangCli({
+      bin: fakeBin,
+      timeoutMs: 20,
+      killGraceMs: 20
+    });
+
+    await assert.rejects(() => cli.execute("auth.status"), /timed out after 20ms/);
+  });
+});
+
 test("executeCapability enforces login preflight and manual-only policy", async () => {
   const unauthenticatedCalls = [];
   const unauthenticated = {
@@ -253,7 +276,7 @@ test("npm run bunjang blocks denied capabilities before spawning bunjang-cli", a
   });
 });
 
-test("npm run bunjang can call the real bunjang-cli auth.status command", async () => {
+test("npm run bunjang can call the real bunjang-cli auth.status command", { skip: process.env.BUNJANG_E2E !== "1" }, async () => {
   const result = await runNpmBunjang(["auth.status"]);
 
   assert.equal(result.exitCode, 0, result.stderr);
