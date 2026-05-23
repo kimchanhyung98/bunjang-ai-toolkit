@@ -2,7 +2,7 @@
   "name": "bunjang-assistant",
   "version": "0.2.0",
   "private": true,
-  "description": "AI surface manifests, public skill metadata, install metadata, and a safe wrapper for connecting bunjang-cli to Codex and Claude on macOS.",
+  "description": "Bunjang assistant for Codex and Claude on macOS — market price lookup, listing search and ranking, chat and favorites management, and sales draft generation.",
   "type": "module",
   "bin": {
     "bunjang-assistant": "./install/bunjang-assistant-install.mjs",

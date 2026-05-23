@@ -1,7 +1,7 @@
 {
   "name": "bunjang-assistant",
   "version": "0.2.0",
-  "description": "Codex plugin metadata that helps agents invoke the public bunjang skill and local bunjang-cli wrapper consistently on macOS.",
+  "description": "Run Bunjang tasks from Codex on macOS — market price lookup, listing search and ranking, chat and favorites management, and sales draft generation.",
   "author": {
     "name": "kimchanhyung98",
     "url": "https://github.com/kimchanhyung98"
@@ -23,8 +23,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "bunjang assistant",
-    "shortDescription": "Codex metadata for safely using bunjang-cli through the public bunjang skill and local wrapper.",
-    "longDescription": "bunjang-assistant provides a plugin-first helper layer for predictable agent use of the existing bunjang-cli package. Short aliases such as bunjang tool, bunjang assistant, 번개장터툴, and 번개장터 도구 route to the same public `bunjang` entrypoint. The Codex surface uses the root plugin metadata, public skill, install scripts, and wrapper execution contract together.",
+    "shortDescription": "Bunjang assistant for Codex on macOS — market price, search, chat, favorites, and sales drafts.",
+    "longDescription": "Bunjang assistant for Codex on macOS. Run market price lookups, listing search and ranking, chat and favorites management, and sales draft generation through natural-language requests. Short aliases such as 번개장터툴, 번개장터 도구, bunjang tool, and bunjang assistant route to the same entrypoint.",
     "developerName": "kimchanhyung98",
     "category": "developer-tools",
     "capabilities": [

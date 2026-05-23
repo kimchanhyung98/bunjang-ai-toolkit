@@ -1,7 +1,7 @@
 {
   "name": "bunjang-assistant",
   "version": "0.2.0",
-  "description": "Plugin-first metadata for connecting the public `bunjang` skill and bunjang-cli wrapper consistently across Codex and Claude on macOS.",
+  "description": "Run Bunjang tasks from Codex and Claude on macOS — market price lookup, listing search and ranking, chat and favorites management, and sales draft generation.",
   "author": {
     "name": "kimchanhyung98",
     "url": "https://github.com/kimchanhyung98"
