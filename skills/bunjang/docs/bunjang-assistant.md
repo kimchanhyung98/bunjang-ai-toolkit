@@ -7,7 +7,7 @@
 - 공개 진입점 스킬 `bunjang`
 - capability 레지스트리와 실행 계약
 - 시세 조회, 판매글 초안, 번개장터 운영 참조 문서
-- Codex, Claude 등 플러그인 메타데이터
+- Codex와 Claude 플러그인 메타데이터
 - `bunjang-cli` 래퍼
 
 ## 경계
@@ -15,7 +15,7 @@
 - 이 번들은 번개장터 서비스나 `bunjang-cli` 자체를 포함하지 않습니다.
 - 실제 실행은 npm dependency `bunjang-cli`와 저장소 로컬 래퍼가 담당합니다.
 - 최종 구매, 최종 판매글 등록, 계정 설정 변경은 수동 전용입니다.
-- macOS Intel, Apple Silicon, Codex, Claude 등만 지원 대상으로 둡니다.
+- macOS Intel과 Apple Silicon에서 Codex와 Claude만 지원 대상으로 둡니다.
 
 ## 읽는 순서
 

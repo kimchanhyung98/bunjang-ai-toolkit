@@ -11,14 +11,15 @@
   "license": "MIT",
   "keywords": [
     "bunjang",
-    "bunjang-cli",
     "bunjang-assistant",
-    "codex-plugin",
+    "bunjang-cli",
+    "bunjang-ai",
+    "bunjang-agent",
     "bunjang-tool",
     "bunjang-tools",
-    "번개장터툴",
-    "번개장터도구",
-    "agent-toolkit"
+    "bunjang-toolkit",
+    "번장",
+    "번개장터"
   ],
   "skills": "./skills/",
   "interface": {
@@ -28,18 +29,16 @@
     "developerName": "kimchanhyung98",
     "category": "developer-tools",
     "capabilities": [
-      "bunjang-cli capability routing",
-      "market price lookup workflow",
-      "login preflight guidance",
-      "safe sales draft workflow guidance"
+      "market price lookup",
+      "listing search and ranking",
+      "chat and favorites management",
+      "safe sales draft guidance"
     ],
     "websiteURL": "https://github.com/kimchanhyung98/bunjang-assistant",
     "defaultPrompt": [
-      "Inspect skills/bunjang/SKILL.md and skills/bunjang/docs/capability-registry.md first.",
-      "For market price requests, route through skills/bunjang/references/price.md.",
-      "For sales draft requests, route through skills/bunjang/references/sales.md.",
-      "Use npm run bunjang -- <capabilityId> '<paramsJson>' for supported CLI operations.",
-      "Do not run manual-only purchase, login, posting, or account-setting actions."
+      "번개장터에서 아이폰 15 시세 알려줘.",
+      "번개장터 내 찜 목록과 가격을 확인해줘.",
+      "이 상품 폴더로 번장 판매글 초안을 작성해줘."
     ]
   }
 }

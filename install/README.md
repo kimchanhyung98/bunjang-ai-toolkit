@@ -1,6 +1,6 @@
 # 설치 스크립트
 
-이 디렉토리는 macOS와 Codex, Claude 등 AI 에이전트를 지원하는 설치 스크립트를 둡니다.
+이 디렉토리는 macOS와 Codex, Claude AI 에이전트를 지원하는 설치 스크립트를 둡니다.
 
 ## 통합 설치기
 
@@ -11,7 +11,7 @@ node install/bunjang-assistant-install.mjs --tool claude --dry-run
 node install/bunjang-assistant-install.mjs --tool both --dry-run
 ```
 
-`--tool cli`는 `npm install`을 실행한 뒤 `npm run bunjang -- auth.status`로 준비 상태를 확인합니다. Codex, Claude 등 설치도 기본적으로 같은 CLI 준비 확인을 먼저 수행하며, 표면 연결만 확인하려면 `--no-install-cli`를 함께 사용합니다.
+`--tool cli`는 `npm install`을 실행한 뒤 `npm run bunjang -- auth.status`로 준비 상태를 확인합니다. Codex와 Claude 설치도 기본적으로 같은 CLI 준비 확인을 먼저 수행하며, 표면 연결만 확인하려면 `--no-install-cli`를 함께 사용합니다.
 
 ## 스킬 설치 헬퍼
 
