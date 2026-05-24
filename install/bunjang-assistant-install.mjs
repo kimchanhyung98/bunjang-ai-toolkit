@@ -315,6 +315,13 @@ function installCodex(opts) {
   requireCommand("codex", opts);
   assertAllowedSource(opts.source);
   if (opts.replace) {
+    const removePluginResult = run(
+      "codex",
+      ["plugin", "remove", PLUGIN_ID],
+      opts,
+      { allowFailure: true, capture: true }
+    );
+    warnIfRemoveSkipped(removePluginResult, "codex plugin remove", opts);
     const removeResult = run("codex", ["plugin", "marketplace", "remove", MARKETPLACE_NAME], opts, { allowFailure: true, capture: true });
     warnIfRemoveSkipped(removeResult, "codex plugin marketplace remove", opts);
   }
@@ -322,6 +329,7 @@ function installCodex(opts) {
   if (opts.ref && !isLocalSource(opts.source)) addArgs.push("--ref", opts.ref);
   addArgs.push(expandHome(opts.source));
   run("codex", addArgs, opts);
+  run("codex", ["plugin", "add", PLUGIN_ID], opts);
 }
 
 function installClaude(opts) {

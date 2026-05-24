@@ -54,6 +54,28 @@ test("installer dry-run does not create project skill directories", async () => 
   });
 });
 
+test("installer dry-run plans codex marketplace add followed by plugin add", async () => {
+  const result = await runInstaller([
+    "--tool",
+    "codex",
+    "--no-install-cli",
+    "--no-skill",
+    "--dry-run",
+    "--json"
+  ]);
+
+  assert.equal(result.exitCode, 0, result.stderr);
+  const parsed = JSON.parse(result.stdout);
+  assert.ok(parsed.steps.includes("codex plugin remove bunjang-assistant@bunjang-assistant"));
+  assert.ok(parsed.steps.includes("codex plugin marketplace remove bunjang-assistant"));
+  assert.ok(
+    parsed.steps.includes(
+      "codex plugin marketplace add --ref main https://github.com/kimchanhyung98/bunjang-assistant.git"
+    )
+  );
+  assert.ok(parsed.steps.includes("codex plugin add bunjang-assistant@bunjang-assistant"));
+});
+
 test("skill installer symlink idempotency does not require python3", async () => {
   await withTempDir("bunjang-skill-install-", async (dir) => {
     const target = join(dir, "skills");
