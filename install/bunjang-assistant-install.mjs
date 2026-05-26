@@ -281,7 +281,7 @@ function installCli(opts) {
     "npm",
     ["run", "--silent", "bunjang", "--", "auth.status"],
     opts,
-    { allowFailure: true, capture: opts.json }
+    { allowFailure: true, capture: true }
   );
   warnIfCommandFailed(authStatusResult, "npm run bunjang -- auth.status", opts);
 }
