@@ -219,6 +219,12 @@ function buildSearchArgs(command, params) {
 }
 
 function buildAgentSearchRankArgs(command, params) {
+  for (const unsupported of ["withDetail", "ai", "output", "concurrency"]) {
+    if (params[unsupported] !== undefined) {
+      throw new Error(`agent-search-rank does not accept ${unsupported}`);
+    }
+  }
+
   const args = [command, required(params.query, "query")];
   appendOption(args, "--price-min", params.priceMin);
   appendOption(args, "--price-max", params.priceMax);

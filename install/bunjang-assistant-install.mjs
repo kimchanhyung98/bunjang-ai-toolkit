@@ -283,6 +283,10 @@ function installCli(opts) {
     opts,
     { allowFailure: true, capture: true }
   );
+  if (!opts.json && !opts.dryRun) {
+    if (authStatusResult.stdout) process.stdout.write(authStatusResult.stdout);
+    if (authStatusResult.stderr) process.stderr.write(authStatusResult.stderr);
+  }
   warnIfCommandFailed(authStatusResult, "npm run bunjang -- auth.status", opts);
 }
 
@@ -315,13 +319,26 @@ function installCodex(opts) {
   requireCommand("codex", opts);
   assertAllowedSource(opts.source);
   if (opts.replace) {
-    const removeResult = run("codex", ["plugin", "marketplace", "remove", MARKETPLACE_NAME], opts, { allowFailure: true, capture: true });
+    const removePluginResult = run(
+      "codex",
+      ["plugin", "remove", PLUGIN_ID],
+      opts,
+      { allowFailure: true, capture: true }
+    );
+    warnIfRemoveSkipped(removePluginResult, "codex plugin remove", opts);
+    const removeResult = run(
+      "codex",
+      ["plugin", "marketplace", "remove", MARKETPLACE_NAME],
+      opts,
+      { allowFailure: true, capture: true }
+    );
     warnIfRemoveSkipped(removeResult, "codex plugin marketplace remove", opts);
   }
   const addArgs = ["plugin", "marketplace", "add"];
   if (opts.ref && !isLocalSource(opts.source)) addArgs.push("--ref", opts.ref);
   addArgs.push(expandHome(opts.source));
   run("codex", addArgs, opts);
+  run("codex", ["plugin", "add", PLUGIN_ID], opts);
 }
 
 function installClaude(opts) {

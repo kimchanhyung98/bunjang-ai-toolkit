@@ -54,6 +54,35 @@ test("installer dry-run does not create project skill directories", async () => 
   });
 });
 
+test("installer dry-run plans codex marketplace add followed by plugin add", async () => {
+  const result = await runInstaller([
+    "--tool",
+    "codex",
+    "--no-install-cli",
+    "--no-skill",
+    "--dry-run",
+    "--json"
+  ]);
+
+  assert.equal(result.exitCode, 0, result.stderr);
+  const parsed = JSON.parse(result.stdout);
+  const pluginRemove = parsed.steps.indexOf("codex plugin remove bunjang-assistant@bunjang-assistant");
+  const marketplaceRemove = parsed.steps.indexOf("codex plugin marketplace remove bunjang-assistant");
+  const marketplaceAdd = parsed.steps.indexOf(
+    "codex plugin marketplace add --ref main https://github.com/kimchanhyung98/bunjang-assistant.git"
+  );
+  const pluginAdd = parsed.steps.indexOf("codex plugin add bunjang-assistant@bunjang-assistant");
+
+  assert.notEqual(pluginRemove, -1, "plugin remove step missing");
+  assert.notEqual(marketplaceRemove, -1, "marketplace remove step missing");
+  assert.notEqual(marketplaceAdd, -1, "marketplace add step missing");
+  assert.notEqual(pluginAdd, -1, "plugin add step missing");
+
+  assert.ok(pluginRemove < marketplaceRemove, "plugin remove must precede marketplace remove");
+  assert.ok(marketplaceRemove < marketplaceAdd, "marketplace remove must precede marketplace add");
+  assert.ok(marketplaceAdd < pluginAdd, "marketplace add must precede plugin add");
+});
+
 test("skill installer symlink idempotency does not require python3", async () => {
   await withTempDir("bunjang-skill-install-", async (dir) => {
     const target = join(dir, "skills");

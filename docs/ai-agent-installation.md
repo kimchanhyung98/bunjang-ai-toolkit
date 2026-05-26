@@ -17,7 +17,7 @@ node install/bunjang-assistant-install.mjs --tool both
 ```
 
 플러그인 연결을 검증할 때는 먼저 `--dry-run`을 사용합니다.
-Codex, Claude 등 설치는 기본적으로 CLI 의존성 설치와 `auth.status` 확인을 먼저 수행합니다. 표면 연결만 확인하려면 `--no-install-cli`를 함께 사용합니다.
+Codex와 Claude 설치는 기본적으로 CLI 의존성 설치와 `auth.status` 확인을 먼저 수행합니다. 표면 연결만 확인하려면 `--no-install-cli`를 함께 사용합니다.
 
 ## 설치 범위
 

@@ -65,7 +65,7 @@ test("argument builder maps only configured capabilities to bunjang-cli commands
     ["auth.status", {}, ["auth", "status"]],
     ["auth.logout", {}, ["auth", "logout"]],
     ["search.listings", { query: "아이폰", maxItems: 5, sort: "date", withDetail: true }, ["search", "아이폰", "--max-items", "5", "--sort", "date", "--with-detail"]],
-    ["agent-search-rank", { query: "아이폰", maxItems: 3, withDetail: true, ai: true }, ["agent-search-rank", "아이폰", "--max-items", "3"]],
+    ["agent-search-rank", { query: "아이폰", maxItems: 3 }, ["agent-search-rank", "아이폰", "--max-items", "3"]],
     ["item.get", { listingId: "item-1" }, ["item", "get", "item-1"]],
     ["item.list", { listingIds: ["item-1", "item-2"] }, ["item", "list", "--ids", "item-1,item-2"]],
     ["chat.list", {}, ["chat", "list"]],
@@ -91,6 +91,22 @@ test("denied, unknown, or incomplete work is rejected before spawning bunjang-cl
   assert.throws(() => buildCapabilityArgs("raw.cli", {}), /Unknown capability/);
   assert.throws(() => buildCapabilityArgs("search.listings", {}), /query is required/);
   assert.throws(() => buildCapabilityArgs("chat.send", { threadId: "thread-1" }), /message is required/);
+  assert.throws(
+    () => buildCapabilityArgs("agent-search-rank", { query: "아이폰", withDetail: true }),
+    /agent-search-rank does not accept withDetail/
+  );
+  assert.throws(
+    () => buildCapabilityArgs("agent-search-rank", { query: "아이폰", ai: true }),
+    /agent-search-rank does not accept ai/
+  );
+  assert.throws(
+    () => buildCapabilityArgs("agent-search-rank", { query: "아이폰", output: "json" }),
+    /agent-search-rank does not accept output/
+  );
+  assert.throws(
+    () => buildCapabilityArgs("agent-search-rank", { query: "아이폰", concurrency: 2 }),
+    /agent-search-rank does not accept concurrency/
+  );
 });
 
 test("wrapper executes configured commands with --json and parses JSON output", async () => {
@@ -273,6 +289,29 @@ test("npm run bunjang blocks denied capabilities before spawning bunjang-cli", a
       status: "manual_only",
       capabilityId: "purchase.start"
     });
+  });
+});
+
+test("npm run bunjang blocks all manual-only and unsupported irreversible actions", async () => {
+  await withTempDir("bunjang-cli-irreversible-", async (dir) => {
+    const fakeBin = join(dir, "should-not-run");
+    await writeFile(
+      fakeBin,
+      "#!/usr/bin/env node\nthrow new Error('denied command should not spawn');\n"
+    );
+    await chmod(fakeBin, 0o755);
+
+    for (const capabilityId of ["purchase.start", "purchase.confirm", "account.settings.update", "auth.login"]) {
+      const result = await runNpmBunjang([capabilityId, "{}"], { BUNJANG_CLI_BIN: fakeBin });
+      assert.equal(result.exitCode, 0, `${capabilityId} stderr: ${result.stderr}`);
+      assert.deepEqual(JSON.parse(result.stdout), { status: "manual_only", capabilityId });
+    }
+
+    for (const capabilityId of ["register", "upload"]) {
+      const result = await runNpmBunjang([capabilityId, "{}"], { BUNJANG_CLI_BIN: fakeBin });
+      assert.notEqual(result.exitCode, 0, capabilityId);
+      assert.match(result.stderr, new RegExp(`Unknown capability: ${capabilityId}`));
+    }
   });
 });
 
