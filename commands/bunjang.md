@@ -19,14 +19,14 @@ Start from the bundled bunjang skill instructions:
 
 Default flow:
 
-1. Confirm the wrapper is ready with `npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run auth.status`. The first run downloads and prepares the CLI and can take up to a few minutes — tell the user before starting.
+1. Confirm the wrapper is ready with `npx -y --package=github:kimchanhyung98/bunjang-assistant bunjang-assistant-run auth.status`. The first run downloads and prepares the CLI and can take up to a few minutes — tell the user before starting.
 2. Route the user's task to the smallest supported domain reference:
    - Listing search / detail / chat / favorites / purchase-ready check → `skills/bunjang/references/marketplace.md`
    - Price lookup ("시세", "중고가", "판매가 추천") → `skills/bunjang/references/price.md`
    - Sales draft from a product directory → `skills/bunjang/references/sales.md`
    - Browser-only login or final posting steps → `skills/bunjang/references/browser.md`
-3. Execute CLI work only through `npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run <capabilityId> '<paramsJson>'`. Capability ids and login policy come from `src/config.js`; do not invent raw `bunjang-cli` flags.
-4. Report each step as `executed`, `login_required`, or `manual_only`. For `login_required`, run `npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run auth.status`; if not logged in, tell the user to finish browser login (the CLI prints the URL) and pause until they confirm.
+3. Execute CLI work only through `npx -y --package=github:kimchanhyung98/bunjang-assistant bunjang-assistant-run <capabilityId> '<paramsJson>'`. Capability ids and login policy come from `src/config.js`; do not invent raw `bunjang-cli` flags.
+4. Report each step as `executed`, `login_required`, or `manual_only`. For `login_required`, run `npx -y --package=github:kimchanhyung98/bunjang-assistant bunjang-assistant-run auth.status`; if not logged in, tell the user to finish browser login (the CLI prints the URL) and pause until they confirm.
 5. Hard stops — never perform: `auth.login` itself, starting or confirming a purchase (`purchase.start`, `purchase.confirm`), final 등록하기, account setting changes, or uploading user photos/credentials to any third-party service.
 6. If the user asks for analytics the CLI does not expose, say so plainly and offer the closest supported read-only check (listing search, item detail, favorite list, chat read).
 
