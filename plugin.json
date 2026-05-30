@@ -1,6 +1,6 @@
 {
   "name": "bunjang-assistant",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "Run Bunjang tasks from Codex and Claude on macOS — market price lookup, listing search and ranking, chat and favorites management, and sales draft generation.",
   "author": {
     "name": "kimchanhyung98",

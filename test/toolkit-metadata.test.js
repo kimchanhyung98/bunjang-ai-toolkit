@@ -7,6 +7,7 @@ test("package exposes bunjang-assistant metadata and local binaries", async () =
   const pkg = await readJson("package.json");
 
   assert.equal(pkg.name, "bunjang-assistant");
+  assert.equal(pkg.version, "0.4.0");
   assert.equal(pkg.private, true);
   assert.deepEqual(pkg.bin, {
     "bunjang-assistant": "./install/bunjang-assistant-install.mjs",
@@ -29,6 +30,7 @@ test("root plugin metadata is scoped to Codex, Claude, and macOS", async () => {
   const plugin = await readJson("plugin.json");
 
   assert.equal(plugin.name, "bunjang-assistant");
+  assert.equal(plugin.version, "0.4.0");
   assert.deepEqual(plugin.support.codex, ["codex"]);
   assert.deepEqual(plugin.support.claude, ["claude"]);
   assert.deepEqual(plugin.support.os, ["macos-intel", "macos-apple-silicon"]);
@@ -91,9 +93,12 @@ test("installer metadata excludes unsupported surfaces", async () => {
   assert.match(installReadme, /install-skills\.sh/);
   assert.doesNotMatch(installReadme, /install-cli\.sh|install-plugins\.sh|bootstrap-bunjang\.sh/);
   assert.equal(claudePlugin.commands, "./commands/");
+  assert.equal(claudePlugin.version, "0.4.0");
   assert.equal(claudeManifest.commands, "./commands/");
+  assert.equal(claudeManifest.version, "0.4.0");
   assert.deepEqual(claudeMarketplace.owner, { name: "kimchanhyung98" });
   assert.equal(claudeMarketplace.plugins[0].source, "./");
+  assert.equal(claudeMarketplace.plugins[0].version, "0.4.0");
   assert.match(readme, /codex plugin marketplace add --ref main https:\/\/github\.com\/kimchanhyung98\/bunjang-assistant\.git/);
   assert.match(readme, /codex plugin add bunjang-assistant@bunjang-assistant/);
   assert.match(aiInstall, /codex plugin marketplace add --ref main https:\/\/github\.com\/kimchanhyung98\/bunjang-assistant\.git/);

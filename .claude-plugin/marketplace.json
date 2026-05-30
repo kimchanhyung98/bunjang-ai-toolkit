@@ -9,7 +9,7 @@
       "name": "bunjang-assistant",
       "source": "./",
       "description": "Run Bunjang tasks from Claude on macOS — market price lookup, listing search and ranking, chat and favorites management, and sales draft generation.",
-      "version": "0.2.0",
+      "version": "0.4.0",
       "author": {
         "name": "kimchanhyung98"
       },
