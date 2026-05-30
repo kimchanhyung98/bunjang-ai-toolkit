@@ -13,13 +13,13 @@ npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run auth.status
 `npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run` 뒤에 capability ID와 paramsJson을 붙입니다.
 
 ```bash
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run search.listings '{"query":"아이폰","maxItems":20,"withDetail":true}'
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run agent-search-rank '{"query":"아이폰","maxItems":10}'
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run item.get '{"listingId":"123456"}'
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run item.list '{"listingIds":["123456","789012"]}'
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run chat.list
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run favorite.list
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run purchase.prepare '{"listingId":"123456"}'
+npx -y --package=github:kimchanhyung98/bunjang-assistant bunjang-assistant-run search.listings '{"query":"아이폰","maxItems":20,"withDetail":true}'
+npx -y --package=github:kimchanhyung98/bunjang-assistant bunjang-assistant-run agent-search-rank '{"query":"아이폰","maxItems":10}'
+npx -y --package=github:kimchanhyung98/bunjang-assistant bunjang-assistant-run item.get '{"listingId":"123456"}'
+npx -y --package=github:kimchanhyung98/bunjang-assistant bunjang-assistant-run item.list '{"listingIds":["123456","789012"]}'
+npx -y --package=github:kimchanhyung98/bunjang-assistant bunjang-assistant-run chat.list
+npx -y --package=github:kimchanhyung98/bunjang-assistant bunjang-assistant-run favorite.list
+npx -y --package=github:kimchanhyung98/bunjang-assistant bunjang-assistant-run purchase.prepare '{"listingId":"123456"}'
 ```
 
 ## 설치 메타데이터
