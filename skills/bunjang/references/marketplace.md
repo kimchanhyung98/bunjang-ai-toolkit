@@ -15,7 +15,7 @@
 대표 호출:
 
 ```bash
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run search.listings '{"query":"아이폰 15 128GB","maxItems":20,"withDetail":true}'
+npx -y --package=github:kimchanhyung98/bunjang-assistant -- bunjang-assistant-run search.listings '{"query":"아이폰 15 128GB","maxItems":20,"withDetail":true}'
 ```
 
 구조화된 검색 결과 요약 기준을 검증해야 하면 [`search-result-fixture.md`](./search-result-fixture.md)를 읽습니다.
@@ -57,8 +57,8 @@ npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run search.list
 호출 예:
 
 ```bash
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run favorite.list
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run item.list '{"listingIds":["123456","789012"]}'
+npx -y --package=github:kimchanhyung98/bunjang-assistant -- bunjang-assistant-run favorite.list
+npx -y --package=github:kimchanhyung98/bunjang-assistant -- bunjang-assistant-run item.list '{"listingIds":["123456","789012"]}'
 ```
 
 `favorite.list`는 로그인 사전 확인이 필요합니다. `login_required`면 보강 단계로 넘어가지 않고 멈춥니다.

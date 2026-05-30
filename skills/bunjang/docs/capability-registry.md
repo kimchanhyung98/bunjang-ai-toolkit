@@ -6,7 +6,7 @@
 
 1. `src/config.js`
 2. `src/cli.js`
-3. `npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run auth.status`
+3. `npx -y --package=github:kimchanhyung98/bunjang-assistant -- bunjang-assistant-run auth.status`
 
 ## 로그인 없이 허용
 

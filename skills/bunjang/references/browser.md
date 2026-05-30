@@ -21,7 +21,7 @@ agent-browser --help
 
 - 로그인 페이지나 모달을 열 수는 있습니다.
 - 소셜 로그인, 계정 선택, 2FA, 권한 승인은 사용자가 직접 합니다.
-- 사용자가 로그인 완료를 확인하면 `npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run auth.status`로 상태를 다시 확인합니다.
+- 사용자가 로그인 완료를 확인하면 `npx -y --package=github:kimchanhyung98/bunjang-assistant -- bunjang-assistant-run auth.status`로 상태를 다시 확인합니다.
 
 ## 판매글 폼 입력
 

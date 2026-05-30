@@ -31,8 +31,8 @@
 ## 호출 예시
 
 ```bash
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run search.listings '{"query":"발렌시아가 3XL 42","maxItems":30,"withDetail":true}'
-npx -y github:kimchanhyung98/bunjang-assistant bunjang-assistant-run agent-search-rank '{"query":"발렌시아가 3XL 42","maxItems":10}'
+npx -y --package=github:kimchanhyung98/bunjang-assistant -- bunjang-assistant-run search.listings '{"query":"발렌시아가 3XL 42","maxItems":30,"withDetail":true}'
+npx -y --package=github:kimchanhyung98/bunjang-assistant -- bunjang-assistant-run agent-search-rank '{"query":"발렌시아가 3XL 42","maxItems":10}'
 ```
 
 ## 보고 형식

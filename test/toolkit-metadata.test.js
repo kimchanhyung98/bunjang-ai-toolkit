@@ -98,6 +98,28 @@ test("installer metadata excludes unsupported surfaces", async () => {
   assert.match(cliUsage, /`\/bunjang \[작업\]` 슬래시 커맨드로 진입/);
 });
 
+test("runtime docs use the package-selected runner command", async () => {
+  const oldRunnerPattern = /npx -y github:kimchanhyung98\/bunjang-assistant bunjang-assistant-run/;
+  const packageRunnerPattern = /npx -y --package=github:kimchanhyung98\/bunjang-assistant -- bunjang-assistant-run/;
+  const docs = [
+    "commands/bunjang.md",
+    "docs/cli-toolkit-integration.md",
+    "skills/bunjang/SKILL.md",
+    "skills/bunjang/docs/capability-registry.md",
+    "skills/bunjang/docs/cli-usage.md",
+    "skills/bunjang/docs/execution-contract.md",
+    "skills/bunjang/references/browser.md",
+    "skills/bunjang/references/marketplace.md",
+    "skills/bunjang/references/price.md"
+  ];
+
+  for (const path of docs) {
+    const text = await readText(path);
+    assert.doesNotMatch(text, oldRunnerPattern, path);
+    assert.match(text, packageRunnerPattern, path);
+  }
+});
+
 async function readJson(path) {
   return JSON.parse(await readText(path));
 }

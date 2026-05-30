@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { chmod, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { chmod, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import {
   APP_CONFIG,
   CAPABILITIES,
@@ -263,11 +263,54 @@ test("npm run bunjang invokes the configured bunjang-cli binary through the wrap
   });
 });
 
+test("bunjang-assistant-run bin symlink invokes the wrapper", async () => {
+  await withTempDir("bunjang-cli-bin-symlink-", async (dir) => {
+    const fakeBin = join(dir, "bunjang-cli");
+    await writeFile(
+      fakeBin,
+      [
+        "#!/usr/bin/env node",
+        "const args = process.argv.slice(2);",
+        "console.log(JSON.stringify({ args }));"
+      ].join("\n")
+    );
+    await chmod(fakeBin, 0o755);
+
+    const runnerLink = join(dir, "bunjang-assistant-run");
+    await symlink(resolve("src/index.js"), runnerLink);
+
+    const result = await runNodeBin(
+      runnerLink,
+      ["search.listings", "{\"query\":\"아이폰\",\"maxItems\":2}"],
+      { BUNJANG_CLI_BIN: fakeBin }
+    );
+
+    assert.equal(result.exitCode, 0, result.stderr);
+    assert.deepEqual(JSON.parse(result.stdout), {
+      status: "executed",
+      capabilityId: "search.listings",
+      result: {
+        args: ["--json", "search", "아이폰", "--max-items", "2"]
+      }
+    });
+  });
+});
+
 test("npm run bunjang reports invalid paramsJson clearly", async () => {
   const result = await runNpmBunjang(["search.listings", "{not-json"]);
 
   assert.notEqual(result.exitCode, 0);
   assert.match(result.stderr, /Invalid paramsJson:/);
+});
+
+test("npm run bunjang usage includes local paramsJson", async () => {
+  const result = await runNpmBunjang([]);
+
+  assert.notEqual(result.exitCode, 0);
+  assert.match(
+    result.stderr,
+    /local clone: npm run bunjang -- <capabilityId> \[paramsJson\]/
+  );
 });
 
 test("npm run bunjang blocks denied capabilities before spawning bunjang-cli", async () => {
@@ -331,6 +374,26 @@ function runNpmBunjang(args, env = {}) {
     execFile(
       "npm",
       ["run", "--silent", "bunjang", "--", ...args],
+      {
+        cwd: process.cwd(),
+        env: { ...process.env, ...env }
+      },
+      (error, stdout, stderr) => {
+        resolve({
+          exitCode: error?.code ?? 0,
+          stdout,
+          stderr
+        });
+      }
+    );
+  });
+}
+
+function runNodeBin(bin, args, env = {}) {
+  return new Promise((resolve) => {
+    execFile(
+      process.execPath,
+      [bin, ...args],
       {
         cwd: process.cwd(),
         env: { ...process.env, ...env }
