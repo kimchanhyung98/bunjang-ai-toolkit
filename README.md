@@ -7,11 +7,11 @@
 
 # bunjang-ai-toolkit
 
-> ⚠️ 번개장터를 AI로 운영하기 위한, 실험적 플러그인 입니다.
+> ⚠️ 번개장터 상점을 AI로 운영하기 위한, 실험적 플러그인 입니다.  
 
 번개장터 시세 조회, 매물 검색, 채팅, 찜 관리, 판매글 초안 작성을 위한 스킬입니다.
 
-`bunjang-cli`를 안전하게 호출하는 Node 래퍼와 Codex/Claude 플러그인 메타데이터를 제공합니다.
+[`bunjang-cli`](https://github.com/pinion05/bunjangcli)를 안전하게 호출하는 Node 래퍼와 Codex/Claude 플러그인 메타데이터를 제공합니다.
 
 ## 설치
 
